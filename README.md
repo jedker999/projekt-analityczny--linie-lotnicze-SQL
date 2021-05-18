@@ -16,17 +16,17 @@ Raport powinien odpowiadać na poniższe pytania: <br>
 Jakie było średnie opóźnienie przylotu?<br>
 Jakie było maksymalne opóźnienie przylotu?<br>
 Który lot miał największe opóźnienie przylotu?<br>
-[przewoźnik, miasto wylotu, miasto przylotu, data lotu, opóźnienie]
+[przewoźnik, miasto wylotu, miasto przylotu, data lotu, opóźnienie]<br>
 Które dni tygodnia są najgorsze do podróżowania?<br>
-[tabela zawierająca dla każdego dnia tygodnia średni czas opóźnienia]
+[tabela zawierająca dla każdego dnia tygodnia średni czas opóźnienia]<br>
 Które linie lotnicze latające z San Francisco (SFO) mają najmniejsze opóźnienia przylotu?<br>
-[tabela zawierająca nazwę przewoźnika oraz średnie opóźnienie z jego wszystkich lotów]
+[tabela zawierająca nazwę przewoźnika oraz średnie opóźnienie z jego wszystkich lotów]<br>
 Jaka część linii lotniczych ma regularne opóźnienia, tj. jej lot ma średnio co najmniej 10 min. opóźnienia?<br>
-[tylko linie lotnicze występujące w tabeli `Flight_delays`]
+[tylko linie lotnicze występujące w tabeli `Flight_delays`]<br>
 Jak opóźnienia wylotów wpływają na opóźnienia przylotów?<br>
-[współczynnik korelacji Pearsona między czasem opóźnienia wylotów a czasem opóźnienia przylotów]
+[współczynnik korelacji Pearsona między czasem opóźnienia wylotów a czasem opóźnienia przylotów]<br>
 Która linia lotnicza miała największy wzrost (różnica) średniego opóźnienia przylotów w ostatnim tygodniu miesiąca, tj. między 1-23 a 24-31 lipca?<br>
-[nazwa przewoźnika oraz wzrost]
+[nazwa przewoźnika oraz wzrost]<br>
 Które linie lotnicze latają zarówno na trasie SFO → PDX (Portland), jak i SFO → EUG (Eugene)?<br>
 Jak najszybciej dostać się z Chicago do Stanfordu, zakładając wylot po 14:00 czasu lokalnego?<br>
 [tabela zawierająca jako miejsce wylotu Midway (MDW) lub O'Hare (ORD), jako miejsce przylotu San Francisco (SFO), San Jose (SJC) lub Oakland (OAK) oraz średni czas opóźnienia przylotu dla wylotów po 14:00 czasu lokalnego (atrybut `crs_dep_time`); wyniki pogrupowane po miejscu wylotu i przylotu, posortowane malejąco]<br>

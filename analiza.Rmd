@@ -1,0 +1,178 @@
+---
+title: 'Projekt analityczny: linie lotnicze'
+author: "*Jędrzej Konopko*"
+date: "**22 04 2020**"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+                      
+```{r, echo=FALSE}
+library(odbc)
+library(DBI)
+
+con <- DBI::dbConnect(odbc(),
+                      Driver = "SQL Server",
+                      Database = "dbad_flights",
+                      Server = "mssql-2017.labs.wmi.amu.edu.pl",
+                      Encoding = "cp1250",
+                      Trusted_Connection = "True")
+```
+
+# Zadanie 1
+```{r r_code1}
+
+zadanie1 <-DBI::dbGetQuery(con, "SELECT 
+                          AVG(arr_delay_new) AS [avg_delay]
+                          FROM Flight_delays;")
+zadanie1
+```
+
+---
+
+# Zadanie 2
+```{r r_code2}
+zadanie2 <-DBI::dbGetQuery(con, "SELECT 
+                          MAX(arr_delay_new) AS [max_delay]
+                          FROM Flight_delays;")
+zadanie2
+```
+
+---
+
+# Zadanie 3
+```{r r_code3}
+zadanie3 <-DBI::dbGetQuery(con, "SELECT
+                          TOP 1 arr_delay_new,fl_date,
+                          carrier,origin_city_name,dest_city_name
+                          FROM Flight_delays
+                          WHERE arr_delay_new IS NOT NULL
+                          ORDER BY arr_delay_new DESC;")
+zadanie3
+```
+
+---
+
+# Zadanie 4
+```{r r_code4}
+zadanie4 <-DBI::dbGetQuery(con, "SELECT
+    AVG(F.arr_delay_new) AS [avg_delay],
+    W.weekday_name
+    FROM Flight_delays F
+        LEFT OUTER JOIN Weekdays W
+        ON F.day_of_week=W.weekday_id
+    GROUP BY W.weekday_name
+    ORDER BY avg_delay DESC;")
+zadanie4
+```
+
+---
+
+# Zadanie 5 
+```{r r_code5}
+zadanie5 <-DBI::dbGetQuery(con, "SELECT AVG(F.arr_delay_new) AS [avg_delay],
+       A.airline_name       
+FROM Flight_delays F
+    LEFT OUTER JOIN Airlines A
+        ON F.airline_id=A.airline_id
+GROUP BY A.airline_name
+HAVING SUM(CASE WHEN F.origin='SFO' THEN 1 ELSE 0 END) > 0
+ORDER BY avg_delay DESC;")
+zadanie5
+```
+
+---
+
+# Zadanie 6
+```{r r_code6}
+zadanie6 <-DBI::dbGetQuery(con, "SELECT
+((SELECT COUNT(*)
+FROM(
+SELECT AVG(F.arr_delay_new) AS [avg_del]  
+FROM Flight_delays F
+LEFT OUTER JOIN Airlines A
+ON F.airline_id=A.airline_id
+GROUP BY A.airline_name
+HAVING AVG(arr_delay_new)>10) AS [del_airlines])*1.0)/
+
+((SELECT COUNT(*)
+FROM(
+SELECT AVG(F.arr_delay_new) AS [avg_del]  
+FROM Flight_delays F
+LEFT OUTER JOIN Airlines A
+ON F.airline_id=A.airline_id
+GROUP BY A.airline_name) AS [all_airlines])*1.0) AS [late_proportion]")
+zadanie6
+```
+
+---
+
+# Zadanie 7 
+```{r r_code7}
+zadanie7 <-DBI::dbGetQuery(con, "SELECT (Avg((dep_delay_new)*(arr_delay_new))
+-(Avg(dep_delay_new)*Avg(arr_delay_new)))
+/(StDevP(dep_delay_new)*StDevP(arr_delay_new)) AS [Pearsons r]
+FROM Flight_delays;")
+zadanie7
+```
+
+---
+
+# Zadanie 8
+```{r r_code8}
+zadanie8 <-DBI::dbGetQuery(con, "SELECT TOP 1 -(aa.avg_delay1- bb.avg_delay2)
+AS [delay_increase],aa.airline_name
+FROM
+(SELECT AVG(F.arr_delay_new) AS [avg_delay1],
+       A.airline_name
+FROM Flight_delays F
+    LEFT OUTER JOIN Airlines A
+        ON F.airline_id=A.airline_id
+WHERE fl_date BETWEEN '2017-07-01' AND '2017-07-23'
+GROUP BY A.airline_name) AS aa, 
+
+(SELECT AVG(F.arr_delay_new) AS [avg_delay2],
+       A.airline_name
+FROM Flight_delays F
+    LEFT OUTER JOIN Airlines A
+        ON F.airline_id=A.airline_id
+WHERE fl_date BETWEEN '2017-07-24' AND '2017-07-31'
+GROUP BY A.airline_name) as bb
+where aa.airline_name =bb.airline_name
+ORDER BY delay_increase DESC")
+zadanie8
+```
+
+---
+
+# Zadanie 9
+```{r r_code9}
+zadanie9 <-DBI::dbGetQuery(con, "SELECT 
+       A.airline_name       
+FROM Flight_delays F
+    LEFT OUTER JOIN Airlines A
+        ON F.airline_id=A.airline_id
+WHERE origin='SFO' AND dest='EUG'
+AND A.airline_name IN (
+SELECT 
+       A.airline_name       
+FROM Flight_delays F
+    LEFT OUTER JOIN Airlines A
+        ON F.airline_id=A.airline_id
+WHERE origin='SFO' AND dest='PDX'
+
+GROUP BY A.airline_name
+)
+GROUP BY A.airline_name
+ORDER BY A.airline_name") 
+zadanie9
+```
+
+---
+
